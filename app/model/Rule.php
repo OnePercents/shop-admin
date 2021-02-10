@@ -1,0 +1,16 @@
+<?php
+declare (strict_types = 1);
+
+namespace app\model;
+
+use think\Model;
+
+/**
+ * @mixin \think\Model
+ */
+class Rule extends Model
+{
+    public function roles(){
+        return $this->belongsToMany('Role','role_rule');
+    }
+}
