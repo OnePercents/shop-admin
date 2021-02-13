@@ -80,7 +80,7 @@ class Manager extends BaseController
     {
         // 获取传过来的数据并保存到数据库
         // 数据过滤
-        $param = $request->only([
+        $param = $request->only([   
             'username',
             'password',
             'avatar',

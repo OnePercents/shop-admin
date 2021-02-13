@@ -54,13 +54,13 @@ function cms_login(array $param)
     // 拿到当前用户数据
     $user = is_object($data) ? $data->toArray() : $data;
     // 获取之前的token 防止重复登录
-    // $beforeToken = $cacheType->get($tag.'_'.$user['id']);
-    // if($beforeToken){
-    //   cms_logout([
-    //     'token' => $token,
-    //     'tag' => $tag
-    //   ]);
-    // }
+    $beforeToken = $cacheType->get($tag.'_'.$user['id']);
+    if($beforeToken){
+      cms_logout([
+        'token' => $token,
+        'tag' => $tag
+      ]);
+    }
     // 存储当前用户数据
     $cacheType->set($tag . '_' . $token, $user, $expire);
     // 存储token
@@ -94,4 +94,36 @@ function cms_logout(array $param)
   $user = \think\facade\Cache::store(config('cms.'.$tag.'.token.store'))->pull($tag.'_'.$token);
   if(!empty($user)) \think\facade\Cache::store(config('cms.'.$tag.'.token.store'))->pull($tag.'_'.$user[id]);
   return $user;
+}
+
+// 数据集组合分类树(一维数组)
+function list_to_tree($array,$field = 'pid',$pid = 0,$level = 0){
+    //声明静态数组,避免递归调用时,多次声明导致数组覆盖
+    static $list = [];
+    foreach ($array as $key => $value){
+        if ($value[$field] == $pid){
+            $value['level'] = $level;
+            $list[] = $value;
+            unset($array[$key]);
+            list_to_tree($array,$field,$value['id'], $level+1);
+        }
+    }
+    return $list;
+}
+
+// 数据集组合分类树(多维数组)
+function list_to_tree2($cate,$field = 'pid',$child = 'child',$pid = 0,$callback = false){
+    if(!is_array($cate)) return [];
+    $arr = [];
+    foreach($cate as $v){
+        $extra = true;
+        if(is_callable($callback)){
+            $extra = $callback($v);
+        }
+        if($v[$field] == $pid && $extra){
+            $v[$child] = list_to_tree2($cate,$field,$child,$v['id'],$callback);
+            $arr[]     = $v;
+        }
+    }
+    return $arr;
 }

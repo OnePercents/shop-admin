@@ -26,7 +26,9 @@ Route::group('admin',function(){
   Route::get('manager/:page','admin.Manager/index');
 
   // ------------------角色
-  // 修改管理员状态 禁用/启用
+  // 设置角色权限
+  Route::post('role/set_rule','admin.Role/setRule'); 
+  // 修改管理员状态 禁用/启用     
   Route::post('role/:id/update_status','admin.Role/updateStatus');
   // 删除管理员
   Route::post('role/:id/delete','admin.Role/delete');
@@ -37,4 +39,17 @@ Route::group('admin',function(){
   // 管理员列表
   Route::get('role/:page','admin.Role/index');
   
+  
+  // ------------------权限
+  // 修改管理员状态 禁用/启用     
+  Route::post('rule/:id/update_status','admin.rule/updateStatus');
+  // 删除管理员
+  Route::post('rule/:id/delete','admin.rule/delete');
+  // 更新管理员
+  Route::post('rule/:id','admin.rule/update');
+  // 新增权限
+  Route::post('rule','admin.Rule/save');
+  // 权限列表
+  Route::get('rule/:page','admin.rule/index');
+
 })->middleware(app\middleware\checkManagerToken::class);

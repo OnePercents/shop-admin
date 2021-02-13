@@ -30,50 +30,6 @@ class Role extends BaseController
     }
 
     /**
-     * 显示创建资源表单页.
-     *
-     * @return \think\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * 新增角色
-     *
-     * @param  \think\Request  $request
-     * @return \think\Response
-     */
-    public function save(Request $request)
-    {
-        $param = $request->param();
-        return showSuccess($this->M->save($param));
-    }
-
-    /**
-     * 显示指定的资源
-     *
-     * @param  int  $id
-     * @return \think\Response
-     */
-    public function read($id)
-    {
-        //
-    }
-
-    /**
-     * 显示编辑资源表单页.
-     *
-     * @param  int  $id
-     * @return \think\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * 修改角色
      *
      * @param  \think\Request  $request
@@ -104,13 +60,22 @@ class Role extends BaseController
     }
 
     /**
-     * 删除指定资源
+     * 删除角色
      *
      * @param  int  $id
      * @return \think\Response
      */
     public function delete($id)
     {
-        //
+        // 判断该角色是否已使用
+        $count = request()->Model->managers->count();
+        if($count) apiException('该角色已被使用！'); 
+        return showSuccess($request->Model->delete());
+    }
+    
+    // 设置角色权限
+    public function setRule(){
+        $ruleIds = request()->param('rule_ids');
+        return showSuccess(request()->Model->setRule($ruleIds));
     }
 }

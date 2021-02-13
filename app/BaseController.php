@@ -90,7 +90,7 @@ abstract class BaseController
     protected function getAutoModel()
     {
         if ($this->autoModel) {
-            $modelName = $this->modelPath ? str_replace('/', '\\', $this->modelPath) : $this->cInfo['name'];
+            $modelName = $this->modelPath  ? str_replace('/', '\\', $this->modelPath) : $this->cInfo['name'];
             $this->M = app('app\model\\' . $modelName);
         }
     }
@@ -149,4 +149,10 @@ abstract class BaseController
         return $v->failException(true)->check($data);
     }
 
+    // 新增方法
+    public function save(Request $request)
+    {
+        $param = $this->request->param();
+        return showSuccess($this->M->save($param));
+    }
 }
